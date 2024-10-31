@@ -70,7 +70,7 @@
                   <value>org.exoplatform.addons.jwt.JwtLoginModule required
     portalContainerName=portal
     realmName=gatein-domain;
-  org.exoplatform.services.security.j2ee.TomcatLoginModule required</value>
+  org.exoplatform.services.security.j2ee.TomcatLoginModule requisite</value>
                 </replacement>
               </replacements>
             </configuration>

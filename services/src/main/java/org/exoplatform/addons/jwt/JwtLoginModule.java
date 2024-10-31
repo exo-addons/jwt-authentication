@@ -157,7 +157,7 @@ public class JwtLoginModule extends TomcatLoginModule {
     return true;
   }
 
-  private String validateToken(String authorization) {
+  private String validateToken(String authorization) throws LoginException {
     try {
       authorization = authorization.substring("Bearer ".length()).trim();
 
@@ -181,8 +181,8 @@ public class JwtLoginModule extends TomcatLoginModule {
       return claims.getSubject();
     } catch (Exception e) {
       log.error("Unable to validate jwt token {}", authorization, e);
+      throw new LoginException("Unable to validate jwt token");
     }
-    return null;
   }
 
   private void begin(OrganizationService orgService) {
