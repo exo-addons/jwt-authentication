@@ -72,7 +72,7 @@ public class JwtLoginModule extends TomcatLoginModule {
   private void loadPublicKeyContent() {
     try (InputStream is = new URI(this.jwtPublicKeyUrl).toURL().openStream()) {
       jwtPublicKeyContent = IOUtils.toString(is, StandardCharsets.UTF_8);
-      jwtPublicKeyContent = jwtPublicKeyContent.replace("\\n", "")
+      jwtPublicKeyContent = jwtPublicKeyContent.replace("\n", "")
                                                .replace("-----BEGIN PUBLIC KEY-----", "")
                                                .replace("-----END PUBLIC KEY-----", "");
       LOG.info("Public key founded : {}", jwtPublicKeyContent);
