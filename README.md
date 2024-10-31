@@ -23,7 +23,7 @@ cd ${EXO_HOME}
 Available properties are :
 
 - exo.jwt.issuer : the issuer (sender) of the JWT token. This value must exactly match the "iss" field in the jwt token. Default value : exo.base.url
-- exo.jwt.audience : the target audience (receiver) of the JWT token. This value must exactly match the "aud" field in the jwt token
+- exo.jwt.audience : the target audience (receiver) of the JWT token. This value must exactly match the "aud" field in the jwt token. Default value : exo.base.url
 - exo.jwt.publicKeyUrl : the url of the public certificate allowing to verify the JWT signature. Certificate can be local (file://path/to/the/cert), or remote (https://url/to/the/cert)
 - exo.jwt.header : the header in which the token is. Default value : "Authorization"
 - exo.jwt.parameter : the url parameter in which the token is. No default value. If exo.jwt.header is filled, this parameter is ignored. If this option is used, the "Bearer " string is not necessary
