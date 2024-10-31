@@ -75,6 +75,7 @@ public class JwtLoginModule extends TomcatLoginModule {
       jwtPublicKeyContent = jwtPublicKeyContent.replace("\\n", "")
                                                .replace("-----BEGIN PUBLIC KEY-----", "")
                                                .replace("-----END PUBLIC KEY-----", "");
+      LOG.info("Public key founded : {}", jwtPublicKeyContent);
     } catch (Exception e) {
       log.error("Unable to load keystore {}", jwtPublicKeyUrl, e);
       jwtPublicKeyContent="";
