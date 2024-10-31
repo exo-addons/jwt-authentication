@@ -1,0 +1,54 @@
+#
+# Default excludes
+#
+
+# Binaries
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+*.war
+*.ear
+*.sar
+*.class
+*.bundle.js.map
+*.bundle.js
+
+
+# Maven 
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+release.properties
+
+# IntelliJ project files 
+*.iml
+*.iws
+*.ipr
+.idea/
+
+# eclipse project file
+.settings/
+.metadata/
+.classpath
+.project
+
+# OS
+.DS_Store
+
+# Misc
+*.swp
+transaction.log
+rebel.xml
+
+# Webpack
+node/
+node_modules/
+etc/
+# Munified files
+webapp/javascript
