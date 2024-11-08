@@ -27,4 +27,5 @@ Available properties are :
 - exo.jwt.publicKeyUrl : the url of the public certificate allowing to verify the JWT signature. Certificate can be local (file://path/to/the/cert), or remote (https://url/to/the/cert)
 - exo.jwt.header : the header in which the token is. Default value : "Authorization"
 - exo.jwt.parameter : the url parameter in which the token is. No default value. If exo.jwt.header is filled, this parameter is ignored. If this option is used, the "Bearer " string is not necessary
-- 
+- exo.jwt.redirectIfAnonym : specify if server must redirect on another url if user is not loggued. Default value : false
+- exo.jwt.redirectUrl : if `exo.jwt.redirectIfAnonym` is true and user is not loggued, eXo server will redirect on `exo.jwt.redirectUrl`

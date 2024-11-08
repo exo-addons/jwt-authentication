@@ -44,10 +44,14 @@ public class JwtFilter implements Filter {
   private String jwtHeaderName;
 
   private String jwtParameterName;
+  private boolean jwtRedirectIfAnonym;
+  private String jwtRedirectUrl;
 
   public JwtFilter() {
     this.jwtHeaderName = PropertyManager.getProperty("exo.jwt.header");
     this.jwtParameterName = PropertyManager.getProperty("exo.jwt.parameter");
+    this.jwtRedirectUrl = PropertyManager.getProperty("exo.jwt.redirectUrl");
+    this.jwtRedirectIfAnonym = Boolean.parseBoolean(PropertyManager.getProperty("exo.jwt.redirectIfAnonym"));
 
     if (this.jwtHeaderName == null && this.jwtParameterName == null) {
       this.jwtHeaderName = DEFAULT_AUTHORIZATION_HEADER;
@@ -73,7 +77,7 @@ public class JwtFilter implements Filter {
           authorizationToken = "Bearer " + authorizationToken;
         }
         String username = extractUsername(authorizationToken);
-        if (username!=null) {
+        if (username != null) {
           ServletContainer servletContainer = ServletContainerFactory.getServletContainer();
           Credentials credentials = new Credentials(username, authorizationToken);
           try {
@@ -81,6 +85,15 @@ public class JwtFilter implements Filter {
           } catch (AuthenticationException ae) {
             LOG.error("Unable to authenticate user with jwt token {}", authorizationToken);
           }
+        }
+      }
+      if (this.jwtRedirectIfAnonym) {
+        String authenticatedUser = httpRequest.getRemoteUser();
+        LOG.info("user found after authentication = {}", authenticatedUser);
+        if (authenticatedUser == null) {
+          HttpServletResponse httpResponse = (HttpServletResponse)servletResponse;
+          httpResponse.sendRedirect(this.jwtRedirectUrl);
+          return;
         }
       }
     }
