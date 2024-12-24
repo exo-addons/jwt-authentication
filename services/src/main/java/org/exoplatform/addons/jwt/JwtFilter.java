@@ -33,7 +33,10 @@ import org.gatein.wci.security.Credentials;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.List;
 
 public class JwtFilter implements Filter {
 
@@ -43,14 +46,22 @@ public class JwtFilter implements Filter {
 
   private String jwtHeaderName;
 
-  private String jwtParameterName;
-  private boolean jwtRedirectIfAnonym;
-  private String jwtRedirectUrl;
+  private String       jwtParameterName;
+  private boolean      jwtRedirectIfAnonym;
+  private String       jwtRedirectUrl;
+  private List<String> exclusionsUrl = new ArrayList<>();
 
   public JwtFilter() {
     this.jwtHeaderName = PropertyManager.getProperty("exo.jwt.header");
     this.jwtParameterName = PropertyManager.getProperty("exo.jwt.parameter");
     this.jwtRedirectUrl = PropertyManager.getProperty("exo.jwt.redirectUrl");
+    String exclusions = PropertyManager.getProperty("exo.jwt.redirect.exclusions");
+    if (exclusions != null) {
+      exclusionsUrl.addAll(Arrays.asList(exclusions.split(",")));
+    } else {
+      exclusionsUrl.add("/portal/rest/onlyoffice/editor/status/");
+      exclusionsUrl.add("/portal/rest/onlyoffice/editor/content/");
+    }
     this.jwtRedirectIfAnonym = Boolean.parseBoolean(PropertyManager.getProperty("exo.jwt.redirectIfAnonym"));
 
     if (this.jwtHeaderName == null && this.jwtParameterName == null) {
@@ -87,7 +98,7 @@ public class JwtFilter implements Filter {
           }
         }
       }
-      if (this.jwtRedirectIfAnonym) {
+      if (this.jwtRedirectIfAnonym && !exclusionsUrl.stream().anyMatch(s -> httpRequest.getRequestURI().startsWith(s))) {
         String authenticatedUser = httpRequest.getRemoteUser();
         LOG.info("user found after authentication = {}", authenticatedUser);
         if (authenticatedUser == null) {
