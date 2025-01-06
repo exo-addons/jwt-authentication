@@ -95,6 +95,9 @@ public class JwtFilter implements Filter {
             servletContainer.login(httpRequest, (HttpServletResponse) servletResponse, credentials);
           } catch (AuthenticationException ae) {
             LOG.error("Unable to authenticate user with jwt token {}", authorizationToken);
+            HttpServletResponse httpResponse = (HttpServletResponse)servletResponse;
+            httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unable to authenticate user.");
+            return;
           }
         }
       }
