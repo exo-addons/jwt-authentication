@@ -37,6 +37,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class JwtFilter implements Filter {
 
@@ -46,10 +49,11 @@ public class JwtFilter implements Filter {
 
   private String jwtHeaderName;
 
-  private String       jwtParameterName;
-  private boolean      jwtRedirectIfAnonym;
+  private String        jwtParameterName;
+  private boolean       jwtRedirectIfAnonym;
   private String       jwtRedirectUrl;
-  private List<String> exclusionsUrl = new ArrayList<>();
+  private List<String>  exclusionsUrl = new ArrayList<>();
+  private List<Pattern> exclusionsPattern = new ArrayList<>();
 
   public JwtFilter() {
     this.jwtHeaderName = PropertyManager.getProperty("exo.jwt.header");
@@ -59,9 +63,17 @@ public class JwtFilter implements Filter {
     if (exclusions != null) {
       exclusionsUrl.addAll(Arrays.asList(exclusions.split(",")));
     } else {
-      exclusionsUrl.add("/portal/rest/onlyoffice/editor/status/");
-      exclusionsUrl.add("/portal/rest/onlyoffice/editor/content/");
+      exclusionsUrl.add("/portal/rest/onlyoffice/editor/status/.*");
+      exclusionsUrl.add("/portal/rest/onlyoffice/editor/content/.*");
+      exclusionsUrl.add("/portal/rest/v1/social/users/[0-9]*/avatar");
     }
+
+    exclusionsPattern=exclusionsUrl.stream()
+                                   .map(s -> s.replace("/", "\\/"))
+                                   .map(Pattern::compile)
+                                   .toList();
+
+
     this.jwtRedirectIfAnonym = Boolean.parseBoolean(PropertyManager.getProperty("exo.jwt.redirectIfAnonym"));
 
     if (this.jwtHeaderName == null && this.jwtParameterName == null) {
@@ -101,7 +113,7 @@ public class JwtFilter implements Filter {
           }
         }
       }
-      if (this.jwtRedirectIfAnonym && !exclusionsUrl.stream().anyMatch(s -> httpRequest.getRequestURI().startsWith(s))) {
+      if (this.jwtRedirectIfAnonym && exclusionsPattern.stream().noneMatch(p -> p.matcher(httpRequest.getRequestURI()).find())) {
         String authenticatedUser = httpRequest.getRemoteUser();
         LOG.info("user found after authentication = {}", authenticatedUser);
         if (authenticatedUser == null) {
